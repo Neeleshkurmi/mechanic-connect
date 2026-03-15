@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Wrench, LogOut, CheckCircle, Shield } from "lucide-react";
 import { useAuthStore } from "@/store/auth-store";
+import { api } from "@/services/api";
 import { toast } from "sonner";
 
 const Profile = () => {
@@ -20,11 +21,16 @@ const Profile = () => {
 
   const confirmRoleChange = async () => {
     setUpdating(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setRole(pendingRole);
-    setUpdating(false);
-    setShowModal(false);
-    toast.success("User role updated successfully");
+    try {
+      const res = await api.updateRole(mobile, pendingRole);
+      setRole(pendingRole);
+      setShowModal(false);
+      toast.success(res.message || "User role updated successfully");
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setUpdating(false);
+    }
   };
 
   const isMechanic = role === "MECHANIC";

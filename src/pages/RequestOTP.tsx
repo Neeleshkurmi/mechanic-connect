@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Phone, ChevronDown, Wrench } from "lucide-react";
 import { useAuthStore } from "@/store/auth-store";
+import { api } from "@/services/api";
 import { toast } from "sonner";
 
 const COUNTRY_CODES = [
@@ -42,13 +43,17 @@ const RequestOTP = () => {
 
     setLoading(true);
     const fullMobile = countryCode + cleanPhone;
-    setMobile(fullMobile);
 
-    // Simulate API call
-    await new Promise((r) => setTimeout(r, 1200));
-    setLoading(false);
-    toast.success("OTP sent successfully!");
-    navigate("/verify");
+    try {
+      const res = await api.requestOtp(fullMobile);
+      setMobile(fullMobile);
+      toast.success(res.message || "OTP sent successfully!");
+      navigate("/verify");
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

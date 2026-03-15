@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Pencil, Wrench, User, Loader2 } from "lucide-react";
 import { useAuthStore } from "@/store/auth-store";
+import { api } from "@/services/api";
 import { toast } from "sonner";
 
 const VerifyOTP = () => {
@@ -42,12 +43,16 @@ const VerifyOTP = () => {
     }
 
     setLoading(true);
-    // Simulate API call
-    await new Promise((r) => setTimeout(r, 1500));
-    setLoading(false);
-    setAccessToken("mock-token-" + Date.now());
-    toast.success("Verified successfully! Welcome aboard.");
-    navigate("/profile");
+    try {
+      const res = await api.verifyOtp(mobile, code, role);
+      setAccessToken(res.data.accessToken);
+      toast.success(res.message || "Verified successfully!");
+      navigate("/profile");
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
