@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Wrench, LogOut, CheckCircle, Shield } from "lucide-react";
 import { useAuthStore } from "@/store/auth-store";
+import { api } from "@/services/api";
 import { toast } from "sonner";
 
 const Profile = () => {
