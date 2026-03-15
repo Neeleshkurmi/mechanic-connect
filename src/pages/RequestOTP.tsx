@@ -42,13 +42,17 @@ const RequestOTP = () => {
 
     setLoading(true);
     const fullMobile = countryCode + cleanPhone;
-    setMobile(fullMobile);
 
-    // Simulate API call
-    await new Promise((r) => setTimeout(r, 1200));
-    setLoading(false);
-    toast.success("OTP sent successfully!");
-    navigate("/verify");
+    try {
+      const res = await api.requestOtp(fullMobile);
+      setMobile(fullMobile);
+      toast.success(res.message || "OTP sent successfully!");
+      navigate("/verify");
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
