@@ -21,11 +21,16 @@ const Profile = () => {
 
   const confirmRoleChange = async () => {
     setUpdating(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setRole(pendingRole);
-    setUpdating(false);
-    setShowModal(false);
-    toast.success("User role updated successfully");
+    try {
+      const res = await api.updateRole(mobile, pendingRole);
+      setRole(pendingRole);
+      setShowModal(false);
+      toast.success(res.message || "User role updated successfully");
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setUpdating(false);
+    }
   };
 
   const isMechanic = role === "MECHANIC";

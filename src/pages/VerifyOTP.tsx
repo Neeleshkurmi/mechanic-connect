@@ -43,12 +43,16 @@ const VerifyOTP = () => {
     }
 
     setLoading(true);
-    // Simulate API call
-    await new Promise((r) => setTimeout(r, 1500));
-    setLoading(false);
-    setAccessToken("mock-token-" + Date.now());
-    toast.success("Verified successfully! Welcome aboard.");
-    navigate("/profile");
+    try {
+      const res = await api.verifyOtp(mobile, code, role);
+      setAccessToken(res.data.accessToken);
+      toast.success(res.message || "Verified successfully!");
+      navigate("/profile");
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
